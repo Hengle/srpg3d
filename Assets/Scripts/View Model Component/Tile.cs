@@ -1,11 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Tile : MonoBehaviour {
+public class Tile: MonoBehaviour {
 
 	public const float stepHeight = 0.25f;
-	public Point pos;
+	public Vec pos;
 	public int height;
+	public GameObject content;
+    [HideInInspector]
+    public Tile prev;
+    [HideInInspector]
+    public float distance;
 
 	public Vector3 center { get { return new Vector3(pos.x, height * stepHeight, pos.y); } }
 
@@ -24,23 +29,23 @@ public class Tile : MonoBehaviour {
 		Match();
 	}
 
-	public void Load(Point p, int h) {
+	public void Load(Vec p, int h) {
 		pos = p;
 		height = h;
 		Match();
 	}
 
 	public void Load(Vector3 v) {
-		Load(new Point((int)v.x, (int)v.z), (int)v.y); // <- rounding?
+		Load(new Vec(v.x, v.z), (int)v.y); // loads tile x, y, then height (in layers)
 	}
 
 	// Use this for initialization
-	void Start () {
-	
+	void Start() {
+
 	}
-	
+
 	// Update is called once per frame
-	void Update () {
-	
+	void Update() {
+
 	}
 }

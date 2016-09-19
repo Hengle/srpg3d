@@ -1,10 +1,35 @@
-﻿using UnityEngine;
+﻿#define B
+#if B
+#else
 using UnityEditor;
+#endif
+using UnityEngine;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
-public class BoardCreator : MonoBehaviour {
+#if B
+public class BoardCreator: MonoBehaviour {
+	public void Grow() {
+	}
+	public void Shrink() {
+	}
+	public void GrowArea() {
+	}
+	public void ShrinkArea() {
+	}
+	public void UpdateMarker() {
+	}
+	public void Clear() {
+	}
+	public void Save() {
+	}
+	public void Load() {
+	}
+}
+#else
+public class BoardCreator: MonoBehaviour {
+	#region Fields / Properties
 	[SerializeField]
 	GameObject tileViewPrefab;
 	[SerializeField]
@@ -16,13 +41,13 @@ public class BoardCreator : MonoBehaviour {
 	[SerializeField]
 	int height = 8;
 	[SerializeField]
-	Point pos;
+	Vec pos;
+	[SerializeField]
+	string fname = "Default";
 	[SerializeField]
 	LevelData levelData;
+	Dictionary<Vec, Tile> tiles = new Dictionary<Vec, Tile>();
 
-	Dictionary<Point, Tile> tiles = new Dictionary<Point, Tile>();
-
-	// load selection marker
 	Transform marker {
 		get {
 			if (_marker == null) {
@@ -32,7 +57,17 @@ public class BoardCreator : MonoBehaviour {
 			return _marker;
 		}
 	}
-    Transform _marker;
+	Transform _marker;
+	#endregion
+
+	#region Public
+	public void Grow() {
+		GrowSingle(pos);
+	}
+
+	public void Shrink() {
+		ShrinkSingle(pos);
+	}
 
 	public void GrowArea() {
 		Rect r = RandomRect();
@@ -42,14 +77,6 @@ public class BoardCreator : MonoBehaviour {
 	public void ShrinkArea() {
 		Rect r = RandomRect();
 		ShrinkRect(r);
-	}
-
-	public void Grow() {
-		GrowSingle(pos);
-	}
-
-	public void Shrink() {
-		ShrinkSingle(pos);
 	}
 
 	public void UpdateMarker() {
@@ -63,7 +90,39 @@ public class BoardCreator : MonoBehaviour {
 		tiles.Clear();
 	}
 
+	public void Save() {
+		string filePath = Application.dataPath + "/Resources/Levels";
+		if (!Directory.Exists(filePath))
+			CreateSaveDirectory();
 
+		LevelData board = ScriptableObject.CreateInstance<LevelData>();
+		board.tiles = new List<Vector3>(tiles.Count);
+		foreach (Tile t in tiles.Values)
+			board.tiles.Add(new Vector3(t.pos.x, t.height, t.pos.y));
+
+		string fileName = string.Format("Assets/Resources/Levels/{1}.asset", filePath, fname);
+		AssetDatabase.CreateAsset(board, fileName);
+	}
+
+	public void Load() {
+		string filePath = Application.dataPath + "/Resources/Levels";
+		string fileName = string.Format("Assets/Resources/Levels/{1}.asset", filePath, fname);
+		LevelData board = (LevelData)AssetDatabase.LoadAssetAtPath(fileName, typeof(LevelData));
+		Debug.Log(board);
+		levelData = board;
+		Clear();
+		if (levelData == null)
+			return;
+
+		foreach (Vector3 v in levelData.tiles) {
+			Tile t = Create();
+			t.Load(v);
+			tiles.Add(t.pos, t);
+		}
+	}
+	#endregion
+
+	#region Private
 	Rect RandomRect() {
 		int x = UnityEngine.Random.Range(0, width);
 		int y = UnityEngine.Random.Range(0, depth);
@@ -75,7 +134,7 @@ public class BoardCreator : MonoBehaviour {
 	void GrowRect(Rect rect) {
 		for (int y = (int)rect.yMin; y < (int)rect.yMax; ++y) {
 			for (int x = (int)rect.xMin; x < (int)rect.xMax; ++x) {
-				Point p = new Point(x, y);
+				Vec p = new Vec(x, y);
 				GrowSingle(p);
 			}
 		}
@@ -84,35 +143,9 @@ public class BoardCreator : MonoBehaviour {
 	void ShrinkRect(Rect rect) {
 		for (int y = (int)rect.yMin; y < (int)rect.yMax; ++y) {
 			for (int x = (int)rect.xMin; x < (int)rect.xMax; ++x) {
-				Point p = new Point(x, y);
+				Vec p = new Vec(x, y);
 				ShrinkSingle(p);
 			}
-		}
-	}
-
-	public void Save() {
-		string filePath = Application.dataPath + "/Resources/Levels";
-		if (!Directory.Exists(filePath))
-			CreateSaveDirectory();
-
-		LevelData board = ScriptableObject.CreateInstance<LevelData>();
-		board.tiles = new List<Vector3>(tiles.Count);
-		foreach (Tile t in tiles.Values)
-			board.tiles.Add(new Vector3(t.pos.x, t.height, t.pos.y));
-
-		string fileName = string.Format("Assets/Resources/Levels/{1}.asset", filePath, name);
-		AssetDatabase.CreateAsset(board, fileName);
-	}
-
-	public void Load() {
-		Clear();
-		if (levelData == null)
-			return;
-
-		foreach (Vector3 v in levelData.tiles) {
-			Tile t = Create();
-			t.Load(v);
-			tiles.Add(t.pos, t);
 		}
 	}
 
@@ -122,7 +155,7 @@ public class BoardCreator : MonoBehaviour {
 		return instance.GetComponent<Tile>();
 	}
 
-	Tile GetOrCreate(Point p) {
+	Tile GetOrCreate(Vec p) {
 		if (tiles.ContainsKey(p))
 			return tiles[p];
 
@@ -133,13 +166,13 @@ public class BoardCreator : MonoBehaviour {
 		return t;
 	}
 
-	void GrowSingle(Point p) {
+	void GrowSingle(Vec p) {
 		Tile t = GetOrCreate(p);
 		if (t.height < height)
 			t.Grow();
 	}
 
-	void ShrinkSingle(Point p) {
+	void ShrinkSingle(Vec p) {
 		if (!tiles.ContainsKey(p))
 			return;
 
@@ -161,14 +194,6 @@ public class BoardCreator : MonoBehaviour {
 			AssetDatabase.CreateFolder("Assets/Resources", "Levels");
 		AssetDatabase.Refresh();
 	}
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+	#endregion
 }
+#endif
