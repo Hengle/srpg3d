@@ -10,7 +10,10 @@ public class BattleController: StateMachine {
     public Transform cursor;
     public Vec pos;
     public Vec selectedTilepos;
-    /*public Tile currentTile { get { return board.GetTile(pos); } }
+    public GameObject heroPrefab;
+    public Unit currentUnit;
+    public Tile currentTile { get { return board.GetTile(selectedTilepos); } }
+    /*
 	public AbilityMenuPanelController abilityMenuPanelController;
 	public StatPanelController statPanelController;
 	public HitSuccessIndicator hitSuccessIndicator;

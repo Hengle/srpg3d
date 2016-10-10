@@ -68,29 +68,40 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Common\Animation\RectTransformAnchorPositionTweener.cs" />
+    <Compile Include="Assets\Scripts\Common\Animation\RectTransformAnimationExtensions.cs" />
+    <Compile Include="Assets\Scripts\Common\CONSTS.cs" />
     <Compile Include="Assets\Scripts\Common\State Machine\State Machine.cs" />
     <Compile Include="Assets\Scripts\Common\State Machine\State.cs" />
+    <Compile Include="Assets\Scripts\Common\UI\LayoutAnchor.cs" />
     <Compile Include="Assets\Scripts\Controller\Battle States\BattleState.cs" />
     <Compile Include="Assets\Scripts\Controller\Battle States\InitBattleState.cs" />
+    <Compile Include="Assets\Scripts\Controller\Battle States\MoveSqeuenceState.cs" />
     <Compile Include="Assets\Scripts\Controller\Battle States\MoveTargetState.cs" />
+    <Compile Include="Assets\Scripts\Controller\Battle States\SelectUnitState.cs" />
     <Compile Include="Assets\Scripts\Controller\BattleController.cs" />
     <Compile Include="Assets\Scripts\Controller\InputController.cs" />
+    <Compile Include="Assets\Scripts\Demo\AnchorTests.cs" />
     <Compile Include="Assets\Scripts\Demo\InputEvent.cs" />
-    <Compile Include="Assets\Scripts\EasingControl.cs" />
-    <Compile Include="Assets\Scripts\EasingEquations.cs" />
+    <Compile Include="Assets\Scripts\Common\Animation\EasingControl.cs" />
+    <Compile Include="Assets\Scripts\Common\Animation\EasingEquations.cs" />
     <Compile Include="Assets\Scripts\EventArgs\InfoEventArgs.cs" />
     <Compile Include="Assets\Scripts\Model\LevelData.cs" />
     <Compile Include="Assets\Scripts\Model\Vec.cs" />
     <Compile Include="Assets\Scripts\PreProduction\BoardCreator.cs" />
-    <Compile Include="Assets\Scripts\TransformAnimationExtensions.cs" />
-    <Compile Include="Assets\Scripts\TransformLocalEulerTweener.cs" />
-    <Compile Include="Assets\Scripts\TransformLocalPositionTweener.cs" />
-    <Compile Include="Assets\Scripts\TransformPositionTweener.cs" />
-    <Compile Include="Assets\Scripts\TransformScaleTweener.cs" />
-    <Compile Include="Assets\Scripts\Tweener.cs" />
-    <Compile Include="Assets\Scripts\Vector3Tweener.cs" />
+    <Compile Include="Assets\Scripts\Common\Animation\TransformAnimationExtensions.cs" />
+    <Compile Include="Assets\Scripts\Common\Animation\TransformLocalEulerTweener.cs" />
+    <Compile Include="Assets\Scripts\Common\Animation\TransformLocalPositionTweener.cs" />
+    <Compile Include="Assets\Scripts\Common\Animation\TransformPositionTweener.cs" />
+    <Compile Include="Assets\Scripts\Common\Animation\TransformScaleTweener.cs" />
+    <Compile Include="Assets\Scripts\Common\Animation\Tweener.cs" />
+    <Compile Include="Assets\Scripts\Common\Animation\Vector3Tweener.cs" />
     <Compile Include="Assets\Scripts\View Model Component\Board.cs" />
     <Compile Include="Assets\Scripts\View Model Component\CameraRig.cs" />
+    <Compile Include="Assets\Scripts\View Model Component\Movement\FlyMovement.cs" />
+    <Compile Include="Assets\Scripts\View Model Component\Movement\TeleportMovement.cs" />
+    <Compile Include="Assets\Scripts\View Model Component\Movement\WalkMovement.cs" />
+    <Compile Include="Assets\Scripts\View Model Component\Movement\Movement.cs" />
     <Compile Include="Assets\Scripts\View Model Component\Tile.cs" />
     <Compile Include="Assets\Scripts\View Model Component\Unit.cs" />
   </ItemGroup>

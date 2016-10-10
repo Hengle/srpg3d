@@ -1,22 +1,35 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MoveTargetState: BattleState {
 
-	private Vec rotateDirSnap(Vec v, float r) {
-		// rotate vector v clockwise by r*pi radians
-		// rotates movement cw by angle r*pi radians
-		var rot = Quaternion.AngleAxis(r*180f, Vector3.forward);
-		Vec rotated = new Vec(rot * v.vec);
-		return rotated;
-	}	
+    List<Tile> tiles;
+
+    public override void Enter() {
+        base.Enter();
+        Movement mover = owner.currentUnit.GetComponent<Movement>();
+        tiles = mover.GetTilesInRange(board);
+        board.SelectTiles(tiles);
+    }
+
+    public override void Exit() {
+        base.Exit();
+        board.DeSelectTiles(tiles);
+        tiles = null;
+    }
 
 	protected override void OnMove(object sender, InfoEventArgs<Vec> e) {
 		if (e.info != new Vec(0, 0, 0)) {
-			//Debug.Log("pre:" + e.info);
+			Debug.Log("pre:" + e.info);
 			Vec vec = rotateDirSnap(e.info, -0.25f);
 			//Debug.Log(vec);
 			MoveCursor(vec + pos);
 		}
-	}
+    }
+
+    protected override void OnFire(object sender, InfoEventArgs<int> e) {
+        if (tiles.Contains(owner.currentTile))
+            owner.ChangeState<MoveSequenceState>();
+    }
 }

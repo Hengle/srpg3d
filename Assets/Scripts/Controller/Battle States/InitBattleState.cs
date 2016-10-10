@@ -7,13 +7,31 @@ public class InitBattleState: BattleState {
 		StartCoroutine(Init());
 	}
 
-	IEnumerator Init() {
+    void SpawnTestUnits() {
+        System.Type[] components = new System.Type[] { typeof(WalkMovement), typeof(FlyMovement), typeof(TeleportMovement) };
+        for (int i = 0; i < 3; ++i) {
+            GameObject instance = Instantiate(owner.heroPrefab) as GameObject;
+
+            Vec p = new Vec((int)levelData.tiles[i].x, (int)levelData.tiles[i].z);
+
+            Unit unit = instance.GetComponent<Unit>();
+            unit.Place(board.GetTile(p));
+            unit.Match();
+
+            Movement m = instance.AddComponent(components[i]) as Movement;
+            m.range = 5;
+            m.jumpHeight = 1;
+        }
+    }
+
+    IEnumerator Init() {
 		if (true) Debug.Log("levelData: " + levelData);
 		board.Load(levelData);
 		Vec p = new Vec(levelData.tiles[0].x, levelData.tiles[0].z);
         MoveCursor(p);
-		//SelectTile(p);
-		yield return null;
-		owner.ChangeState<MoveTargetState>();
+        //SelectTile(p);
+        SpawnTestUnits(); // This is new
+        yield return null;
+		owner.ChangeState<SelectUnitState>();
 	}
 }
